@@ -44,6 +44,7 @@ type CustomFormFieldProps<TFieldValues extends FieldValues> = {
   iconAlt?: string;
 
   disabled?: boolean;
+  defaultCountry?: string;
 };
 
 type RenderFieldProps<TFieldValues extends FieldValues> =
@@ -107,6 +108,7 @@ const RenderField = <TFieldValues extends FieldValues>({
         />
       );
     default:
+      console.warn(`FormFieldType "${fieldType}" is not yet implemented`);
       return null;
   }
 };

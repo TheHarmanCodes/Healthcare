@@ -37,6 +37,8 @@ const PatientForm = () => {
       // }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   }
 

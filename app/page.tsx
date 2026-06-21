@@ -33,7 +33,7 @@ export default function Home() {
         alt="onboarding"
         height={1000}
         width={1000}
-        className="side-img max-w-1/2"
+        className="side-img max-w-[50%]"
       />
     </div>
   );
