@@ -3,13 +3,13 @@
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import * as z from "zod";
 
 import CustomFormField, { FormFieldType } from "@/components/CustomFormField";
 import SubmitButton from "@/components/SubmitButton";
 import { formSchema } from "@/lib/validation";
 import { useRouter } from "next/navigation";
+import {createUser} from "@/lib/actions/patient.action";
 
 const PatientForm = () => {
   const router = useRouter();
@@ -28,13 +28,13 @@ const PatientForm = () => {
   async function onSubmit({ name, email, phone }: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      // TODO: Database Connectivity and Saving the form data
-      // const userData = {name, email, phone};
-      //
-      // const user = await createUser(userData);
-      // if(user) {
-      //   router.push(`/patients/${user.id}/register`);
-      // }
+      const userData = {name, email, phone};
+
+      const user = await createUser(userData);
+      console.log(user);
+      if(user) {
+        router.push(`/patients/${user.$id}/register`);
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -49,7 +49,7 @@ const PatientForm = () => {
       className="w-full max-w-md space-y-4"
     >
       <section className="mb-12 space-y-4">
-        <h1 className="header">HI there 👋</h1>
+        <h1 className="header">Hi there 👋</h1>
         <p className="text-dark-700">Schedule your first appointment.</p>
       </section>
 

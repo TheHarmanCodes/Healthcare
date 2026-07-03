@@ -1,5 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
+import "react-datepicker/dist/react-datepicker.css";
 import "./globals.css";
 import { Plus_Jakarta_Sans as FontSans } from "next/font/google";
 
@@ -30,11 +31,7 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          forcedTheme="dark"
-        >
+        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
           {children}
         </ThemeProvider>
       </body>
