@@ -89,9 +89,6 @@ const PatientForm = () => {
         label="Phone number"
         placeholder="(555) 123-456-7890"
       />
-      {error && (
-        <div className="text-red-500 text-sm">{error}</div>
-      )}
       <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
     </form>
   );

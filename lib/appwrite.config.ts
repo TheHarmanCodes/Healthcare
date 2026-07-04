@@ -1,7 +1,6 @@
 import "server-only";
 
 import * as sdk from "node-appwrite";
-import {TablesDB} from "node-appwrite";
 
 export const {
     PROJECT_ID,
@@ -22,7 +21,6 @@ client
     .setProject(PROJECT_ID!)
     .setKey(API_KEY!);
 
-// export const databases = new sdk.Databases(client);
 export const tablesDB = new sdk.TablesDB(client);
 export const storage = new sdk.Storage(client);
 export const messaging = new sdk.Messaging(client);

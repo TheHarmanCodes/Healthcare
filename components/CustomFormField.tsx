@@ -150,6 +150,7 @@ const RenderField = <TFieldValues extends FieldValues>({
             id={String(name)}
             name={String(name)}
             disabled={disabled}
+            aria-invalid={fieldState.invalid}
             className="date-picker"
           />
         </div>
@@ -164,7 +165,7 @@ const RenderField = <TFieldValues extends FieldValues>({
           <SelectTrigger className="shad-select-trigger w-full">
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
-          <SelectContent className="shad-select-content">
+          <SelectContent className="shad-select-content" aria-invalid={fieldState.invalid}>
             {children}
           </SelectContent>
         </Select>

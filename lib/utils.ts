@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const parseStringify = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+export const parseStringify = <T, R = T>(value: T): R => JSON.parse(JSON.stringify(value));
 
 // Converts a File to a blob URL.
 // Todo: Remember to call URL.revokeObjectURL() when done to free memory.
