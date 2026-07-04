@@ -18,7 +18,12 @@ const FileUploader = ({ files, onChange }: FileUploaderProps) => {
     [onChange]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+          onDrop,
+          maxFiles: 1,
+          accept: { "image/*": [".svg", ".png", ".jpg", ".jpeg"] },
+   });
 
   const file = files?.[0];
   const isImage = file?.type?.startsWith("image/");
@@ -62,7 +67,7 @@ const FileUploader = ({ files, onChange }: FileUploaderProps) => {
             <p className="text-14-regular">
               <span className="text-[#23ae7c]">Click to upload</span>&nbsp; or drag and drop
             </p>
-            <p>SVG, PNG, JPG or GIF (max 1920 × 1080px)</p>
+            <p>SVG, PNG, JPG and JPEG (max 1920 × 1080px)</p>
           </div>
         </>
       )}
