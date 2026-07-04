@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { toast } from "sonner";
 
 import CustomFormField, { FormFieldType } from "@/components/CustomFormField";
 import SubmitButton from "@/components/SubmitButton";
@@ -36,11 +37,15 @@ const PatientForm = () => {
       if(user) {
         router.push(`/patients/${user.$id}/register`);
       } else {
-        setError("Failed to create user. Please try again.");
+        const message = "Failed to create user. Please try again.";
+        setError(message);
+        toast.error(message);
       }
     } catch (err) {
       console.error(err);
-      setError("An error occurred. Please try again.");
+      const message = "An error occurred. Please try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

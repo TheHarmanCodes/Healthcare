@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import CustomFormField, { FormFieldType } from "@/components/CustomFormField";
 import SubmitButton from "@/components/SubmitButton";
@@ -74,11 +75,15 @@ const RegisterForm = ({ user }: { user: User }) => {
       if (patient) {
         router.push(`/patients/${user.$id}/new-appointment`);
       } else {
-        setError("Failed to register patient. Please try again.");
+        const message = "Failed to register patient. Please try again.";
+        setError(message);
+        toast.error(message);
       }
     } catch (err) {
       console.error("[RegisterForm] submit failed", err);
-      setError("An error occurred during registration. Please try again.");
+      const message = "An error occurred during registration. Please try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
