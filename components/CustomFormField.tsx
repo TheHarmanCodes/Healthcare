@@ -1,6 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import React from "react";
+import DatePicker from "react-datepicker";
+import PhoneInput, { type Value } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import {
   Controller,
   type Control,
@@ -10,7 +14,6 @@ import {
   type FieldValues,
 } from "react-hook-form";
 
-import { Input } from "@/components/ui/input";
 import {
   Field,
   FieldContent,
@@ -18,8 +21,15 @@ import {
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-import "react-phone-number-input/style.css";
-import PhoneInput, { type Value } from "react-phone-number-input";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -28,23 +38,28 @@ export enum FormFieldType {
   CHECKBOX = "checkbox",
   DATE_PICKER = "datePicker",
   SELECT = "select",
+  SKELETON = "skeleton",
 }
 
 type CustomFormFieldProps<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
   fieldType: FormFieldType;
-
   label?: string;
+  labelColor?: string;
   placeholder?: string;
   autoComplete?: string;
   description?: string;
-
   iconSrc?: string;
   iconAlt?: string;
-
   disabled?: boolean;
   defaultCountry?: string;
+  showTimeSelect?: boolean;
+  dateFormat?: string;
+  children?: React.ReactNode;
+  renderSkeleton?: (
+    field: ControllerRenderProps<TFieldValues, FieldPath<TFieldValues>>,
+  ) => React.JSX.Element;
 };
 
 type RenderFieldProps<TFieldValues extends FieldValues> =
@@ -63,6 +78,11 @@ const RenderField = <TFieldValues extends FieldValues>({
   iconSrc,
   iconAlt,
   disabled,
+  showTimeSelect,
+  dateFormat,
+  renderSkeleton,
+  children,
+  label,
 }: RenderFieldProps<TFieldValues>) => {
   switch (fieldType) {
     case FormFieldType.INPUT:
@@ -89,6 +109,7 @@ const RenderField = <TFieldValues extends FieldValues>({
           />
         </div>
       );
+
     case FormFieldType.PHONE_INPUT:
       return (
         <PhoneInput
@@ -107,6 +128,78 @@ const RenderField = <TFieldValues extends FieldValues>({
           className="input-phone"
         />
       );
+
+    case FormFieldType.DATE_PICKER:
+      return (
+        <div className="flex w-full items-center rounded-md border border-dark-500 bg-dark-400">
+          {iconSrc && (
+            <Image
+              src={iconSrc}
+              alt={iconAlt ?? "calendar"}
+              width={24}
+              height={24}
+              className="ml-2 shrink-0"
+            />
+          )}
+          <DatePicker
+            selected={(field.value as Date | null | undefined) ?? null}
+            onChange={(date: Date | null) => field.onChange(date)}
+            dateFormat={dateFormat ?? "dd-MM-yyyy"}
+            showTimeSelect={showTimeSelect ?? false}
+            placeholderText={placeholder}
+            id={String(name)}
+            name={String(name)}
+            disabled={disabled}
+            aria-invalid={fieldState.invalid}
+            className="date-picker"
+          />
+        </div>
+      );
+
+    case FormFieldType.SKELETON:
+      return renderSkeleton ? renderSkeleton(field) : null;
+
+    case FormFieldType.SELECT:
+      return (
+        <Select onValueChange={field.onChange} value={field.value}>
+          <SelectTrigger className="shad-select-trigger w-full">
+            <SelectValue placeholder={placeholder} />
+          </SelectTrigger>
+          <SelectContent className="shad-select-content" aria-invalid={fieldState.invalid}>
+            {children}
+          </SelectContent>
+        </Select>
+      );
+
+    case FormFieldType.TEXTAREA:
+      return (
+        <Textarea
+          {...field}
+          id={String(name)}
+          placeholder={placeholder}
+          className="shad-textArea"
+          disabled={disabled}
+          aria-invalid={fieldState.invalid}
+        />
+      );
+
+    case FormFieldType.CHECKBOX:
+      return (
+        <div className="flex items-center gap-1">
+          <Field orientation="horizontal">
+            <Checkbox
+              id={String(name)}
+              name={String(name)}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+            <FieldLabel htmlFor={String(name)} className="cursor-pointer">
+              {label}
+            </FieldLabel>
+          </Field>
+        </div>
+      );
+
     default:
       console.warn(`FormFieldType "${fieldType}" is not yet implemented`);
       return null;
@@ -118,12 +211,17 @@ const CustomFormField = <TFieldValues extends FieldValues>({
   name,
   fieldType,
   label,
+  labelColor,
   placeholder,
   autoComplete,
   description,
   iconSrc,
   iconAlt,
   disabled,
+  showTimeSelect,
+  dateFormat,
+  renderSkeleton,
+  children,
 }: CustomFormFieldProps<TFieldValues>) => {
   return (
     <Controller
@@ -131,7 +229,15 @@ const CustomFormField = <TFieldValues extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          {label && <FieldLabel htmlFor={String(name)}>{label}</FieldLabel>}
+          {label && fieldType !== FormFieldType.CHECKBOX && (
+            fieldType === FormFieldType.SKELETON ? (
+              <div className={labelColor}>{label}</div>
+            ) : (
+              <FieldLabel htmlFor={String(name)} className={labelColor}>
+                {label}
+              </FieldLabel>
+            )
+          )}
 
           <FieldContent>
             <RenderField
@@ -147,10 +253,14 @@ const CustomFormField = <TFieldValues extends FieldValues>({
               iconSrc={iconSrc}
               iconAlt={iconAlt}
               disabled={disabled}
-            />
+              showTimeSelect={showTimeSelect}
+              dateFormat={dateFormat}
+              renderSkeleton={renderSkeleton}
+            >
+              {children}
+            </RenderField>
 
             {description && <FieldDescription>{description}</FieldDescription>}
-
             {fieldState.error && <FieldError errors={[fieldState.error]} />}
           </FieldContent>
         </Field>

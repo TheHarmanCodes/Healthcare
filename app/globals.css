@@ -4,6 +4,8 @@
 /* ========================================== TAILWIND THEME CONFIGURATION */
 @theme {
   /* Custom colors */
+  --color-destructive: #f24e43;
+  --color-destructive-foreground: #ffffff;
   --color-dark-200: #0d0f10;
   --color-dark-300: #131619;
   --color-dark-400: #1a1d21;
@@ -90,7 +92,12 @@
 }
 
 @utility copyright {
-  @apply text-14-regular justify-items-end text-center text-dark-600 xl:text-left;
+  @apply justify-items-end text-center text-dark-600 xl:text-left;
+}
+
+/* Explicit field error styling */
+[role="alert"][data-slot="field-error"] {
+  @apply text-red-500;
 }
 
 /* ==== SUCCESS */
@@ -126,7 +133,7 @@
 
 /* ==== File Upload */
 @utility file-upload {
-  @apply text-12-regular flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dark-500 bg-dark-400 p-5;
+  @apply text-12-regular text-[#75828c] flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dark-500 bg-dark-400 p-5;
 }
 
 @utility file-upload_label {
@@ -204,7 +211,7 @@
 
 /* =====  SHADCN OVERRIDES - Using ! prefix for important */
 @utility shad-primary-btn {
-  @apply bg-[#3fbe7c] text-white!;
+  @apply bg-[#36c77b] text-white!;
 }
 
 @utility shad-danger-btn {
@@ -256,7 +263,6 @@
   @apply focus:ring-0! focus:ring-offset-0! focus-visible:border-none! focus-visible:outline-none! focus-visible:ring-transparent! focus-visible:ring-offset-0!;
 }
 
-
 @utility shad-table {
   @apply rounded-lg! overflow-hidden!;
 }
@@ -288,7 +294,7 @@
 
 /* =====  REACT PHONE NUMBER INPUT OVERRIDES */
 .input-phone {
-  @apply mt-2 flex h-11 w-full items-center overflow-hidden rounded-md border border-dark-500 bg-dark-400 px-3 text-sm text-light-200;
+  @apply flex h-11 w-full items-center overflow-hidden rounded-md border border-dark-500 bg-dark-400 px-3 text-sm text-light-200;
   color-scheme: dark;
 }
 
@@ -325,9 +331,14 @@
 }
 
 /* =====  REACT-DATEPICKER OVERRIDES */
-.react-datepicker-wrapper.date-picker {
+.react-datepicker-wrapper {
   display: flex;
   align-items: center;
+  width: 100%;
+}
+
+.react-datepicker__input-container {
+  width: 100%;
 }
 
 .react-datepicker,
