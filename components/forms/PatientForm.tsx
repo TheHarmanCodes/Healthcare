@@ -14,6 +14,7 @@ import {createUser} from "@/lib/actions/patient.action";
 const PatientForm = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -27,16 +28,19 @@ const PatientForm = () => {
 
   async function onSubmit({ name, email, phone }: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    setError("");
     try {
       const userData = {name, email, phone};
 
       const user = await createUser(userData);
-      console.log(user);
       if(user) {
         router.push(`/patients/${user.$id}/register`);
+      } else {
+        setError("Failed to create user. Please try again.");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -80,6 +84,9 @@ const PatientForm = () => {
         label="Phone number"
         placeholder="(555) 123-456-7890"
       />
+      {error && (
+        <div className="text-red-500 text-sm">{error}</div>
+      )}
       <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
     </form>
   );

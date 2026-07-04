@@ -229,9 +229,13 @@ const CustomFormField = <TFieldValues extends FieldValues>({
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
           {label && fieldType !== FormFieldType.CHECKBOX && (
-            <FieldLabel htmlFor={String(name)} className={labelColor}>
-              {label}
-            </FieldLabel>
+            fieldType === FormFieldType.SKELETON ? (
+              <div className={labelColor}>{label}</div>
+            ) : (
+              <FieldLabel htmlFor={String(name)} className={labelColor}>
+                {label}
+              </FieldLabel>
+            )
           )}
 
           <FieldContent>

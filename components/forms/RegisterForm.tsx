@@ -25,14 +25,15 @@ import FileUploader from "@/components/FileUploader";
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>("");
 
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
       ...PatientFormDefaultValues,
-      name: "",
-      email: "",
-      phone: "",
+      name: user?.name || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
     },
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -40,6 +41,7 @@ const RegisterForm = ({ user }: { user: User }) => {
 
   async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
     setIsLoading(true);
+    setError("");
 
     try {
       if (!user?.$id) {
@@ -71,9 +73,12 @@ const RegisterForm = ({ user }: { user: User }) => {
 
       if (patient) {
         router.push(`/patients/${user.$id}/new-appointment`);
+      } else {
+        setError("Failed to register patient. Please try again.");
       }
     } catch (err) {
       console.error("[RegisterForm] submit failed", err);
+      setError("An error occurred during registration. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -401,6 +406,10 @@ const RegisterForm = ({ user }: { user: User }) => {
         name="privacyConsent"
         label="I acknowledge that I have reviewed and agree to the privacy policy"
       />
+
+      {error && (
+        <div className="text-red-500 text-sm">{error}</div>
+      )}
 
       <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
     </form>

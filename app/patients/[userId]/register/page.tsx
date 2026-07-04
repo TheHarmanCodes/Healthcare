@@ -1,10 +1,21 @@
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import RegisterForm from "@/components/forms/RegisterForm";
 import { getUser } from "@/lib/actions/patient.action";
 
 const Register = async ({ params }: { params: Promise<{ userId: string }> }) => {
   const { userId } = await params;
-  const user = await getUser(userId);
+
+  let user;
+  try {
+    user = await getUser(userId);
+  } catch (error: unknown) {
+    const appwriteError = error as { code?: number };
+    if (appwriteError.code === 404) {
+      notFound();
+    }
+    throw error;
+  }
 
   return (
     <div className="flex h-screen max-h-screen overflow-hidden bg-[#131619]">

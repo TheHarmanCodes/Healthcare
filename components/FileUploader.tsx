@@ -18,7 +18,16 @@ const FileUploader = ({ files, onChange }: FileUploaderProps) => {
     [onChange]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/svg+xml': ['.svg'],
+      'image/png': ['.png'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/gif': ['.gif'],
+    },
+    maxSize: 1920 * 1080 * 3,
+  });
 
   const file = files?.[0];
   const isImage = file?.type?.startsWith("image/");
