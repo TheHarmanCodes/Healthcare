@@ -3,6 +3,7 @@ import RegisterForm from "@/components/forms/RegisterForm";
 import {getUser} from "@/lib/actions/patient.action";
 import {AppwriteException} from "node-appwrite";
 import {notFound} from "next/navigation";
+import Link from "next/link";
 
 const Register = async ({params}: { params: Promise<{ userId: string }> }) => {
         const {userId} = await params;
@@ -22,15 +23,16 @@ const Register = async ({params}: { params: Promise<{ userId: string }> }) => {
                 <section className="remove-scrollbar container">
                     <div className="sub-container max-w-215 flex-1 flex-col py-10">
                         {/* PulseCare Logo */}
-                        <Image
-                            loading="eager"
-                            src="/assets/icons/logo-full.svg"
-                            height={1000}
-                            width={1000}
-                            alt="PulseCare"
-                            className="mb-10 h-15 w-fit"
-                        />
-
+                        <Link href="/">
+                            <Image
+                                loading="eager"
+                                src="/assets/icons/logo-full.svg"
+                                height={1000}
+                                width={1000}
+                                alt="PulseCare"
+                                className="mb-10 h-15 w-fit"
+                            />
+                        </Link>
                         <RegisterForm user={user}/>
                         <p className="mt-12 copyright text-sm text-gray-600">
                             © 2026 PulseCare

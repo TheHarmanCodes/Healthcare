@@ -13,6 +13,7 @@ import {
 import { Query, ID } from "node-appwrite";
 import { parseStringify } from "@/lib/utils";
 import { InputFile } from "node-appwrite/file";
+import {CreateUserParams, RegisterUserParams} from "@/types";
 
 export const createUser = async (user: CreateUserParams) => {
   try {
@@ -41,6 +42,21 @@ export const getUser = async (userId: string) => {
   try {
     const user = await users.get({userId});
     return parseStringify(user);
+  } catch (err) {
+    console.error("[getUser] failed", err);
+    throw err;
+  }
+};
+
+export const getPatient = async (userId: string) => {
+  try {
+    const patients = await tablesDB.listRows({
+      databaseId: DATABASE_ID!,
+      tableId: PATIENT_COLLECTION_ID!,
+      queries: [Query.equal('userId', userId)],
+    })
+    if (!patients) return null;
+    return parseStringify(patients.rows[0]);
   } catch (err) {
     console.error("[getUser] failed", err);
     throw err;
@@ -77,8 +93,6 @@ export const registerPatient = async ({
         ...patient,
       },
     });
-
-    // console.log("[registerPatient] created row: ", newpatient);
     return parseStringify(newpatient);
   } catch (error) {
     console.error("[registerPatient] failed", error);

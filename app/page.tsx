@@ -35,8 +35,6 @@ export default function Home() {
         width={1000}
         className="side-img max-w-[50%]"
       />
-
-
     </div>
   );
 }
