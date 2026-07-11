@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -9,7 +9,6 @@ import CustomFormField, { FormFieldType } from "@/components/CustomFormField";
 import SubmitButton from "@/components/SubmitButton";
 import { getAppointmentSchema } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-
 import { Doctors } from "@/constants";
 import { SelectItem } from "@/components/ui/select";
 import Image from "next/image";
@@ -46,20 +45,14 @@ const AppointmentForm = ({
     setIsLoading(true);
     setError("");
 
-    let status;
-    switch (type) {
-      case "schedule":
-        status = "scheduled";
-        break;
-      case "cancel":
-        status = "canceled";
-        break;
-      default:
-        status = "pending";
-        break;
-    }
+    const statusMap: Record<typeof type, Status> = {
+      create: "pending",
+      schedule: "scheduled",
+      cancel: "cancelled",
+    };
+    const status = statusMap[type];
     try {
-      if (type === "create" && patientId) {
+      if (patientId) {
         const appointmentData = {
           userId,
           patient: patientId,
@@ -69,11 +62,20 @@ const AppointmentForm = ({
           note: values.note,
           status: status as Status,
         };
-        const appointment = await createAppointment(appointmentData);
-        if (appointment) {
-          form.reset();
-          router.push(
-            `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`,
+        if (type === "create") {
+          const appointment = await createAppointment(appointmentData);
+          if (appointment) {
+            form.reset();
+            router.push(
+              `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`,
+            );
+          } else {
+            toast.error("Failed to create appointment. Please try again.");
+          }
+        } else if (type === "schedule" || type === "cancel") {
+          // Add the corresponding action call (e.g., updateAppointment) here
+          toast.info(
+            `${type === "cancel" ? "Cancellation" : "Scheduling"} not yet implemented.`,
           );
         }
       }
@@ -87,19 +89,12 @@ const AppointmentForm = ({
     }
   }
 
-  let btnLabel;
-
-  switch (type) {
-    case "create":
-      btnLabel = "Create Appointment";
-      break;
-    case "cancel":
-      btnLabel = "Cancel Appointment";
-      break;
-    case "schedule":
-      btnLabel = "Schedule Appointment";
-      break;
-  }
+  const btnLabelMap: Record<typeof type, string> = {
+    create: "Create Appointment",
+    cancel: "Cancel Appointment",
+    schedule: "Schedule Appointment",
+  };
+  const btnLabel = btnLabelMap[type];
 
   return (
     <form
@@ -207,7 +202,6 @@ const AppointmentForm = ({
       >
         {btnLabel}
       </SubmitButton>
-
     </form>
   );
 };

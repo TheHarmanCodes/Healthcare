@@ -13,7 +13,7 @@ import {
 import { Query, ID } from "node-appwrite";
 import { parseStringify } from "@/lib/utils";
 import { InputFile } from "node-appwrite/file";
-import {CreateUserParams, RegisterUserParams} from "@/types";
+import { CreateUserParams, RegisterUserParams } from "@/types";
 
 export const createUser = async (user: CreateUserParams) => {
   try {
@@ -21,10 +21,9 @@ export const createUser = async (user: CreateUserParams) => {
       userId: ID.unique(),
       email: user.email,
       phone: user.phone,
-      password: "",
       name: user.name,
     });
-    return newUser;
+    return parseStringify(newUser);
   } catch (error: unknown) {
     const appwriteError = error as { code?: number };
 
@@ -32,7 +31,7 @@ export const createUser = async (user: CreateUserParams) => {
       const existingUser = await users.list([
         Query.equal("email", [user.email]),
       ]);
-      return existingUser?.users[0];
+      return parseStringify(existingUser?.users[0]);
     }
     throw error;
   }
@@ -40,10 +39,10 @@ export const createUser = async (user: CreateUserParams) => {
 
 export const getUser = async (userId: string) => {
   try {
-    const user = await users.get({userId});
+    const user = await users.get({ userId });
     return parseStringify(user);
   } catch (err) {
-    console.error("[getUser] failed", err);
+    console.error("[getPatient] failed", err);
     throw err;
   }
 };
@@ -53,9 +52,10 @@ export const getPatient = async (userId: string) => {
     const patients = await tablesDB.listRows({
       databaseId: DATABASE_ID!,
       tableId: PATIENT_COLLECTION_ID!,
-      queries: [Query.equal('userId', userId)],
-    })
-    if (!patients) return null;
+      queries: [Query.equal("userId", userId)],
+    });
+
+    if (!patients.rows.length) return null;
     return parseStringify(patients.rows[0]);
   } catch (err) {
     console.error("[getUser] failed", err);
