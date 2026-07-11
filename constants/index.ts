@@ -1,3 +1,5 @@
+import { Gender } from "@/types";
+
 export const GenderOptions = ["Male", "Female", "Other"];
 
 export const PatientFormDefaultValues = {
@@ -27,16 +29,16 @@ export const PatientFormDefaultValues = {
 };
 
 export const IdentificationTypes = [
-  "Birth Certificate",
   "Driver's License",
-  "Medical Insurance Card/Policy",
   "Military ID Card",
-  "National Identity Card",
-  "Passport",
-  "Resident Alien Card (Green Card)",
-  "Social Security Card",
-  "State ID Card",
+  "Aadhar Card",
   "Student ID Card",
+  "Birth Certificate",
+  "Passport",
+  "Social Security Card",
+  "Medical Insurance Card/Policy",
+  "National Identity Card",
+  "Resident Alien Card (Green Card)",
   "Voter ID Card",
 ];
 
@@ -44,38 +46,56 @@ export const Doctors = [
   {
     image: "/assets/images/dr-green.png",
     name: "John Green",
+    specialty: "Cardiologist",
+    rating: "4.9",
   },
   {
     image: "/assets/images/dr-cameron.png",
     name: "Leila Cameron",
+    specialty: "Neurologist",
+    rating: "4.8",
   },
   {
     image: "/assets/images/dr-livingston.png",
     name: "David Livingston",
+    specialty: "Pediatrician",
+    rating: "4.7",
   },
   {
     image: "/assets/images/dr-peter.png",
     name: "Evan Peter",
+    specialty: "Orthopedic Surgeon",
+    rating: "4.9",
   },
   {
     image: "/assets/images/dr-powell.png",
     name: "Jane Powell",
+    specialty: "Dermatologist",
+    rating: "4.6",
   },
   {
     image: "/assets/images/dr-remirez.png",
     name: "Alex Ramirez",
+    specialty: "Psychiatrist",
+    rating: "4.8",
   },
   {
     image: "/assets/images/dr-lee.png",
     name: "Jasmine Lee",
+    specialty: "Ophthalmologist",
+    rating: "4.7",
   },
   {
     image: "/assets/images/dr-cruz.png",
     name: "Alyana Cruz",
+    specialty: "Gynecologist",
+    rating: "4.9",
   },
   {
     image: "/assets/images/dr-sharma.png",
     name: "Hardik Sharma",
+    specialty: "General Physician",
+    rating: "4.5",
   },
 ];
 

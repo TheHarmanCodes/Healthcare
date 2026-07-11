@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -46,6 +47,7 @@ type CustomFormFieldProps<TFieldValues extends FieldValues> = {
   name: FieldPath<TFieldValues>;
   fieldType: FormFieldType;
   label?: string;
+  controlClassName?: string;
   labelColor?: string;
   placeholder?: string;
   autoComplete?: string;
@@ -83,6 +85,7 @@ const RenderField = <TFieldValues extends FieldValues>({
   renderSkeleton,
   children,
   label,
+  controlClassName,
 }: RenderFieldProps<TFieldValues>) => {
   switch (fieldType) {
     case FormFieldType.INPUT:
@@ -150,7 +153,7 @@ const RenderField = <TFieldValues extends FieldValues>({
             id={String(name)}
             name={String(name)}
             disabled={disabled}
-            aria-invalid={fieldState.invalid}
+            aria-invalid={String(fieldState.invalid)}
             className="date-picker"
           />
         </div>
@@ -162,11 +165,27 @@ const RenderField = <TFieldValues extends FieldValues>({
     case FormFieldType.SELECT:
       return (
         <Select onValueChange={field.onChange} value={field.value}>
-          <SelectTrigger className="shad-select-trigger w-full">
-            <SelectValue placeholder={placeholder} />
+          <SelectTrigger
+            id={String(name)}
+            aria-invalid={fieldState.invalid}
+            className="shad-select-trigger w-full"
+          >
+            <SelectValue placeholder={placeholder} className="text-dark-600" />
           </SelectTrigger>
-          <SelectContent className="shad-select-content" aria-invalid={fieldState.invalid}>
-            {children}
+          <SelectContent
+            className="shad-select-content"
+            sideOffset={8}
+            align="start"
+            position="popper"
+          >
+            <div className="shad-select-scroll">
+              {React.Children.map(children, (child, index) => (
+                <React.Fragment key={index}>
+                  {index > 0 && <div className="shad-select-separator" />}
+                  <div className="shad-select-item-wrapper">{child}</div>
+                </React.Fragment>
+              ))}
+            </div>
           </SelectContent>
         </Select>
       );
@@ -177,7 +196,7 @@ const RenderField = <TFieldValues extends FieldValues>({
           {...field}
           id={String(name)}
           placeholder={placeholder}
-          className="shad-textArea"
+          className={cn("shad-textArea", controlClassName)}
           disabled={disabled}
           aria-invalid={fieldState.invalid}
         />
@@ -211,6 +230,7 @@ const CustomFormField = <TFieldValues extends FieldValues>({
   name,
   fieldType,
   label,
+  controlClassName,
   labelColor,
   placeholder,
   autoComplete,
@@ -229,15 +249,15 @@ const CustomFormField = <TFieldValues extends FieldValues>({
       name={name}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          {label && fieldType !== FormFieldType.CHECKBOX && (
-            fieldType === FormFieldType.SKELETON ? (
+          {label &&
+            fieldType !== FormFieldType.CHECKBOX &&
+            (fieldType === FormFieldType.SKELETON ? (
               <div className={labelColor}>{label}</div>
             ) : (
               <FieldLabel htmlFor={String(name)} className={labelColor}>
                 {label}
               </FieldLabel>
-            )
-          )}
+            ))}
 
           <FieldContent>
             <RenderField
@@ -245,6 +265,7 @@ const CustomFormField = <TFieldValues extends FieldValues>({
               fieldState={fieldState}
               control={control}
               name={name}
+              controlClassName={controlClassName}
               fieldType={fieldType}
               label={label}
               placeholder={placeholder}
