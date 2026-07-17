@@ -28,9 +28,12 @@ export const createUser = async (user: CreateUserParams) => {
     const appwriteError = error as { code?: number };
 
     if (appwriteError.code === 409) {
-      const existingUser = await users.list([
-        Query.equal("email", [user.email]),
-      ]);
+      const existingUser = await users.list(
+        {
+          queries: [Query.equal("email", [user.email])],
+        },
+        // {Query.equal("email", [user.email]),}
+      );
       return parseStringify(existingUser?.users[0]);
     }
     throw error;

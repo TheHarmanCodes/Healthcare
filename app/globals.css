@@ -3,9 +3,19 @@
 
 /* ========================================== TAILWIND THEME CONFIGURATION */
 @theme {
-  /* Custom colors */
-  --color-destructive: #f24e43;
-  --color-destructive-foreground: #ffffff;
+  /* All your custom colors */
+  --color-green-500: #24ae7c;
+  --color-green-600: #0d2a1f;
+
+  --color-blue-500: #79b5ec;
+  --color-blue-600: #152432;
+
+  --color-red-500: #f37877;
+  --color-red-600: #ff2721;
+  --color-red-700: #f24e43;
+
+  --color-light-200: #e8e9e9;
+
   --color-dark-200: #0d0f10;
   --color-dark-300: #131619;
   --color-dark-400: #1a1d21;
@@ -17,8 +27,6 @@
 
   --color-black-800: #0a0a0a;
   --color-black-900: #050505;
-
-  --color-light-200: #e8e9e9;
 }
 
 /* ========================================== CUSTOM UTILITIES */
@@ -84,7 +92,7 @@
 }
 
 @utility sub-container {
-  @apply mx-auto flex size-full flex-col py-10;
+  @apply mx-auto flex min-h-full flex-col pt-5 md:py-5;
 }
 
 @utility side-img {
@@ -111,7 +119,7 @@
 
 /* ===== ADMIN */
 @utility admin-header {
-  @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-dark-200 px-[5%] py-5 shadow-lg xl:px-12;
+  @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-dark-200 px-[5%] py-5 backdrop-blur-sm shadow-lg xl:px-12;
 }
 
 @utility admin-main {
@@ -142,7 +150,19 @@
 
 /* ==== Stat Card */
 @utility stat-card {
-  @apply flex flex-1 flex-col gap-6 rounded-2xl bg-cover p-6 shadow-lg;
+  @apply flex flex-1 flex-col gap-6 rounded-2xl bg-cover  p-6 shadow-lg;
+}
+
+@utility bg-appointments {
+  background-image: url("/assets/images/appointments-bg.png");
+}
+
+@utility bg-pending {
+  background-image: url("/assets/images/pending-bg.png");
+}
+
+@utility bg-cancelled {
+  background-image: url("/assets/images/cancelled-bg.png");
 }
 
 /* ==== Status Badge */
@@ -218,7 +238,7 @@
 }
 
 @utility shad-danger-btn {
-  @apply bg-red-700! text-white!;
+  @apply bg-red-600! text-white!;
 }
 
 @utility shad-gray-btn {
@@ -250,7 +270,7 @@
 }
 
 @utility shad-dialog {
-  @apply bg-dark-400! border-dark-500!;
+  @apply bg-dark-400! border-dark-500! border-none;
 }
 
 /* Child selectors - use standard CSS */
@@ -270,12 +290,12 @@
   @apply border-b! border-dark-400! text-light-200!;
 }
 
-@utility shad-otp {
-  @apply w-full! flex! justify-between!;
+.shad-otp {
+  @apply flex w-full justify-between gap-2 sm:gap-3;
 }
 
-@utility shad-otp-slot {
-  @apply text-36-bold! justify-center! flex! border! border-dark-500! rounded-lg! size-16! gap-4!;
+.shad-otp-slot {
+  @apply flex size-10 sm:size-12 lg:size-16 2xl:size-18 items-center justify-center rounded-lg border border-dark-500 text-lg sm:text-2xl lg:text-3xl font-bold;
 }
 
 @utility shad-alert-dialog {
@@ -405,14 +425,14 @@
 }
 
 /* Select Trigger */
-@utility shad-select-trigger{
+@utility shad-select-trigger {
   @apply border-white/10! bg-dark-400/80! backdrop-blur-sm!;
   @apply hover:border-white/20! hover:bg-dark-300/90!;
   @apply focus:ring-2! focus:ring-blue-500/20! focus:border-blue-500/40!;
   @apply rounded-md px-4 h-11! transition-all duration-50;
 }
 /* Select Content */
-@utility shad-select-content{
+@utility shad-select-content {
   @apply rounded-xl! shadow-2xl! overflow-hidden;
   @apply backdrop-blur-xl! backdrop-saturate-150!;
   @apply border-white/10! min-w-[220px]!;
