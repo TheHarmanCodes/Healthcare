@@ -30,8 +30,8 @@ const AppointmentForm = ({
   userId: string;
   patientId: string;
   type: "create" | "cancel" | "schedule";
-  appointment: Appointment;
-  setOpen: (open: boolean) => void;
+  appointment?: Appointment;
+  setOpen?: (open: boolean) => void;
 }) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -99,8 +99,7 @@ const AppointmentForm = ({
           },
           type,
         };
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
+
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
 
         if (updatedAppointment) {
@@ -151,7 +150,6 @@ const AppointmentForm = ({
             fieldType={FormFieldType.SELECT}
             control={form.control}
             name="primaryPhysician"
-            labelColor="text-[#9aa5ad]"
             label="Doctor"
             placeholder="Select a doctor"
           >

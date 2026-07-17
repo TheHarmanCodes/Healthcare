@@ -252,9 +252,9 @@ const CustomFormField = <TFieldValues extends FieldValues>({
           {label &&
             fieldType !== FormFieldType.CHECKBOX &&
             (fieldType === FormFieldType.SKELETON ? (
-              <div>{label}</div>
+              <div className={labelColor ?? "text-dark-700"}>{label}</div>
             ) : (
-              <FieldLabel htmlFor={String(name)} className="text-dark-700">
+              <FieldLabel htmlFor={String(name)} className={labelColor ?? "text-dark-700"}>
                 {label}
               </FieldLabel>
             ))}

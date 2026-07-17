@@ -125,7 +125,6 @@ const RegisterForm = ({user}: { user: User }) => {
                 control={form.control}
                 name="name"
                 fieldType={FormFieldType.INPUT}
-                labelColor="text-[#9aa5ad]"
                 label="Full Name"
                 placeholder="John Doe"
                 iconSrc="/assets/icons/user.svg"
@@ -138,7 +137,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="email"
                         fieldType={FormFieldType.INPUT}
-                        labelColor="text-[#9aa5ad]"
                         label="Email"
                         placeholder="johndoe@example.com"
                         iconSrc="/assets/icons/email.svg"
@@ -150,7 +148,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="phone"
                         fieldType={FormFieldType.PHONE_INPUT}
-                        labelColor="text-[#9aa5ad]"
                         label="Phone number"
                         placeholder="(555) 123-4567"
                     />
@@ -163,7 +160,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="birthDate"
                         fieldType={FormFieldType.DATE_PICKER}
-                        labelColor="text-[#9aa5ad]"
                         label="Date of Birth"
                         placeholder="DD-MMMM-YYYY"
                         iconSrc="/assets/icons/calendar.svg"
@@ -176,7 +172,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         fieldType={FormFieldType.SKELETON}
                         control={form.control}
                         name="gender"
-                        labelColor="text-[#9aa5ad]"
                         label="Gender"
                         renderSkeleton={(field) => (
                             <RadioGroup
@@ -214,7 +209,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="address"
                         fieldType={FormFieldType.INPUT}
-                        labelColor="text-[#9aa5ad]"
                         label="Address"
                         placeholder="ex: 14th Street, India, Pin-6104"
                     />
@@ -224,7 +218,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="occupation"
                         fieldType={FormFieldType.INPUT}
-                        labelColor="text-[#9aa5ad]"
                         label="Occupation"
                         placeholder="Software Engineer"
                     />
@@ -237,7 +230,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="emergencyContactName"
                         fieldType={FormFieldType.INPUT}
-                        labelColor="text-[#9aa5ad]"
                         label="Emergency Contact Name"
                         placeholder="Guardian's name"
                     />
@@ -247,7 +239,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="emergencyContactNumber"
                         fieldType={FormFieldType.PHONE_INPUT}
-                        labelColor="text-[#9aa5ad]"
                         label="Emergency Phone Number"
                         placeholder="(555) 123-4567"
                     />
@@ -264,7 +255,6 @@ const RegisterForm = ({user}: { user: User }) => {
                 control={form.control}
                 fieldType={FormFieldType.SELECT}
                 name="primaryPhysician"
-                labelColor="text-[#9aa5ad]"
                 label="Primary Physician"
                 placeholder="Select a physician"
             >
@@ -307,7 +297,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="insuranceProvider"
                         fieldType={FormFieldType.INPUT}
-                        labelColor="text-[#9aa5ad]"
                         label="Insurance provider"
                         placeholder="ex: BlueCross"
                     />
@@ -317,7 +306,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="insurancePolicyNumber"
                         fieldType={FormFieldType.INPUT}
-                        labelColor="text-[#9aa5ad]"
                         label="Insurance policy number"
                         placeholder="ex: AB-12345678-90"
                     />
@@ -330,7 +318,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="allergies"
                         fieldType={FormFieldType.TEXTAREA}
-                        labelColor="text-[#9aa5ad]"
                         label="Allergies (if any)"
                         placeholder="ex: Peanuts, Penicilin, Pollen"
                     />
@@ -340,7 +327,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="currentMedication"
                         fieldType={FormFieldType.TEXTAREA}
-                        labelColor="text-[#9aa5ad]"
                         label="Current Medications"
                         placeholder="ex: Ibuprofen 200mg, Levothyroxine 50mcg"
                     />
@@ -353,7 +339,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="familyMedicalHistory"
                         fieldType={FormFieldType.TEXTAREA}
-                        labelColor="text-[#9aa5ad]"
                         label="Family Medical History (if relevant)"
                         placeholder="ex: Mother had diabetes"
                     />
@@ -363,7 +348,6 @@ const RegisterForm = ({user}: { user: User }) => {
                         control={form.control}
                         name="pastMedicalHistory"
                         fieldType={FormFieldType.TEXTAREA}
-                        labelColor="text-[#9aa5ad]"
                         label="Past Medical History"
                         placeholder="ex: Asthma diagnosis in childhood"
                     />
@@ -380,7 +364,6 @@ const RegisterForm = ({user}: { user: User }) => {
                 control={form.control}
                 name="identificationType"
                 fieldType={FormFieldType.SELECT}
-                labelColor="text-[#9aa5ad]"
                 label="Identification Type"
                 placeholder="Select an identification type"
             >
@@ -397,7 +380,6 @@ const RegisterForm = ({user}: { user: User }) => {
                 control={form.control}
                 name="identificationNumber"
                 fieldType={FormFieldType.INPUT}
-                labelColor="text-[#9aa5ad]"
                 label="Identification Number"
                 placeholder="ex: 12345678"
             />
@@ -407,7 +389,6 @@ const RegisterForm = ({user}: { user: User }) => {
                     fieldType={FormFieldType.SKELETON}
                     control={form.control}
                     name="identificationDocument"
-                    labelColor="text-[#9aa5ad]"
                     label="Scanned Copy of Identification Document"
                     renderSkeleton={(field) => (
                         <FileUploader files={field.value} onChange={field.onChange}/>
