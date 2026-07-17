@@ -1,4 +1,5 @@
 import type { Appointment } from "./appwrite.types";
+import {string} from "zod";
 
 declare type SearchParamProps = {
   params: Promise<{ [key: string]: string }>;
@@ -9,6 +10,7 @@ declare type SearchParamProps = {
 
 declare type Gender = "Male" | "Female" | "Other";
 declare type Status = "pending" | "scheduled" | "cancelled";
+declare type type = "schedule" | "cancel";
 
 declare interface CreateUserParams {
   name: string;
@@ -56,4 +58,12 @@ declare type UpdateAppointmentParams = {
   userId: string;
   appointment: Appointment;
   type: string;
+};
+
+declare type AppointmentModelProps = {
+  type: 'schedule' | 'cancel',
+  patientId: string,
+  userId: string,
+  appointment: Appointment,
+  description: string
 };

@@ -23,6 +23,7 @@ import Image from "next/image";
 import {SelectItem} from "@/components/ui/select";
 import FileUploader from "@/components/FileUploader";
 import {User} from "@/types";
+import {isNetworkError} from "@/lib/network";
 
 const RegisterForm = ({user}: { user: User }) => {
     const router = useRouter();
@@ -42,6 +43,13 @@ const RegisterForm = ({user}: { user: User }) => {
     });
 
     async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
+            const message = "You are offline. Reconnect to continue.";
+            setError(message);
+            toast.error(message);
+            return;
+        }
+
         setIsLoading(true);
         setError("");
 
@@ -82,7 +90,9 @@ const RegisterForm = ({user}: { user: User }) => {
             }
         } catch (err) {
             console.error("[RegisterForm] submit failed", err);
-            const message = "An error occurred during registration. Please try again.";
+            const message = isNetworkError(err)
+                ? "Connection lost during registration. Please reconnect and try again."
+                : "An error occurred during registration. Please try again.";
             setError(message);
             toast.error(message);
         } finally {
@@ -229,7 +239,7 @@ const RegisterForm = ({user}: { user: User }) => {
                         fieldType={FormFieldType.INPUT}
                         labelColor="text-[#9aa5ad]"
                         label="Emergency Contact Name"
-                        placeholder="Guardian’s name"
+                        placeholder="Guardian's name"
                     />
                 </div>
                 <div className="flex-1">

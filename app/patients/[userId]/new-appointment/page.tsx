@@ -3,10 +3,28 @@ import AppointmentForm from "@/components/forms/AppointmentForm";
 import {getPatient} from "@/lib/actions/patient.action";
 import {SearchParamProps} from "@/types";
 import Link from "next/link";
+import {isNetworkError} from "@/lib/network";
+import OfflineState from "@/components/offline-state";
 
 export default async function NewAppointment({params}: SearchParamProps) {
     const {userId} = await params;
-    const patient = await getPatient(userId);
+    let patient;
+
+    try {
+        patient = await getPatient(userId);
+    } catch (error) {
+        if (isNetworkError(error)) {
+            return (
+                <OfflineState
+                    title="Patient form is offline"
+                    description="We could not load the patient record right now. Reconnect and try again."
+                />
+            );
+        }
+
+        throw error;
+    }
+
     // console.log(patient);
     if (!patient) {
         // handle it later on

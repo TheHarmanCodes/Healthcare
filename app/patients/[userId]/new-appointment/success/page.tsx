@@ -7,6 +7,8 @@ import { Doctors } from "@/constants";
 import { formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { notFound } from "next/navigation";
+import {isNetworkError} from "@/lib/network";
+import OfflineState from "@/components/offline-state";
 
 const Success = async ({ params, searchParams }: SearchParamProps) => {
   const { userId } = await params;
@@ -15,7 +17,23 @@ const Success = async ({ params, searchParams }: SearchParamProps) => {
   if (!id) {
     notFound();
   }
-  const appointment = await getAppointment(id);
+
+  let appointment;
+  try {
+    appointment = await getAppointment(id);
+  } catch (error) {
+    if (isNetworkError(error)) {
+      return (
+        <OfflineState
+          title="Appointment details are offline"
+          description="We could not load the submitted appointment right now. Reconnect and refresh this page."
+        />
+      );
+    }
+
+    throw error;
+  }
+
   if (!appointment) {
     notFound();
   }

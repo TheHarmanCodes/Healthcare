@@ -10,7 +10,8 @@ import CustomFormField, { FormFieldType } from "@/components/CustomFormField";
 import SubmitButton from "@/components/SubmitButton";
 import { formSchema } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import {createUser} from "@/lib/actions/patient.action";
+import { createUser } from "@/lib/actions/patient.action";
+import { isNetworkError } from "@/lib/network";
 
 const PatientForm = () => {
   const router = useRouter();
@@ -28,13 +29,20 @@ const PatientForm = () => {
   });
 
   async function onSubmit({ name, email, phone }: z.infer<typeof formSchema>) {
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      const message = "You are offline. Reconnect to continue.";
+      setError(message);
+      toast.error(message);
+      return;
+    }
+
     setIsLoading(true);
     setError("");
     try {
-      const userData = {name, email, phone};
+      const userData = { name, email, phone };
 
       const user = await createUser(userData);
-      if(user) {
+      if (user) {
         router.push(`/patients/${user.$id}/register`);
       } else {
         const message = "Failed to create user. Please try again.";
@@ -43,7 +51,9 @@ const PatientForm = () => {
       }
     } catch (err) {
       console.error(err);
-      const message = "An error occurred. Please try again.";
+      const message = isNetworkError(err)
+        ? "Connection lost while creating the user. Please reconnect and try again."
+        : "An error occurred. Please try again.";
       setError(message);
       toast.error(message);
     } finally {
@@ -57,7 +67,7 @@ const PatientForm = () => {
       onSubmit={form.handleSubmit(onSubmit)}
       className="w-full max-w-md space-y-4"
     >
-      <section className="mb-12 space-y-4">
+      <section className="mb-6 md:mb-12 space-y-4">
         <h1 className="header">Hi there 👋</h1>
         <p className="text-dark-700">Schedule your first appointment.</p>
       </section>
@@ -89,6 +99,7 @@ const PatientForm = () => {
         label="Phone number"
         placeholder="(555) 123-456-7890"
       />
+      {error && <div className="text-sm text-red-500">{error}</div>}
       <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
     </form>
   );
