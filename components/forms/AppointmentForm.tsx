@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { type Resolver, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import CustomFormField, { FormFieldType } from "@/components/CustomFormField";
 import SubmitButton from "@/components/SubmitButton";
@@ -12,13 +11,21 @@ import { useRouter } from "next/navigation";
 import { Doctors } from "@/constants";
 import { SelectItem } from "@/components/ui/select";
 import Image from "next/image";
-import { Status } from "@/types";
+import { AdminAppointmentUpdate, Status } from "@/types";
 import {
   createAppointment,
   updateAppointment,
 } from "@/lib/actions/appointment.action";
 import { Appointment } from "@/types/appwrite.types";
 import { isNetworkError } from "@/lib/network";
+
+type AppointmentFormValues = {
+  primaryPhysician: string;
+  schedule: Date;
+  reason?: string;
+  note?: string;
+  cancellationReason?: string;
+};
 
 const AppointmentForm = ({
   userId,
@@ -38,8 +45,10 @@ const AppointmentForm = ({
   const [error, setError] = useState<string>("");
   const AppointmentFormValidation = getAppointmentSchema(type);
 
-  const form = useForm<z.infer<typeof AppointmentFormValidation>>({
-    resolver: zodResolver(AppointmentFormValidation),
+  const form = useForm<AppointmentFormValues>({
+    resolver: zodResolver(
+      AppointmentFormValidation,
+    ) as Resolver<AppointmentFormValues>,
     defaultValues: {
       primaryPhysician: appointment ? appointment.primaryPhysician : "",
       schedule: appointment ? new Date(appointment.schedule) : new Date(),
@@ -50,7 +59,7 @@ const AppointmentForm = ({
     mode: "onSubmit",
   });
 
-  async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
+  async function onSubmit(values: AppointmentFormValues) {
     if (typeof navigator !== "undefined" && !navigator.onLine) {
       const message = "You are offline. Reconnect to submit this request.";
       setError(message);
@@ -60,13 +69,6 @@ const AppointmentForm = ({
 
     setIsLoading(true);
     setError("");
-
-    const statusMap: Record<typeof type, Status> = {
-      create: "pending",
-      schedule: "scheduled",
-      cancel: "cancelled",
-    };
-    const status = statusMap[type];
     try {
       if (type === "create" && patientId) {
         const appointmentData = {
@@ -76,7 +78,7 @@ const AppointmentForm = ({
           schedule: new Date(values.schedule),
           reason: values.reason!,
           note: values.note,
-          status: status as Status,
+          status: "pending" as Status,
         };
         const appointment = await createAppointment(appointmentData);
         if (appointment) {
@@ -88,17 +90,23 @@ const AppointmentForm = ({
           toast.error("Failed to create appointment. Please try again.");
         }
       } else {
-        const appointmentToUpdate = {
-          userId,
-          appointmentId: appointment.$id!,
-          appointment: {
-            primaryPhysician: values?.primaryPhysician,
-            schedule: new Date(values?.schedule),
-            status: status as Status,
-            cancellationReason: values?.cancellationReason,
-          },
-          type,
-        };
+        if (!appointment?.$id) {
+          throw new Error("Missing appointment id");
+        }
+
+        const appointmentToUpdate: AdminAppointmentUpdate =
+          type === "schedule"
+            ? {
+                type: "schedule",
+                appointmentId: appointment.$id,
+                primaryPhysician: values.primaryPhysician!,
+                schedule: new Date(values.schedule),
+              }
+            : {
+                type: "cancel",
+                appointmentId: appointment.$id,
+                cancellationReason: values.cancellationReason!,
+              };
 
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
 

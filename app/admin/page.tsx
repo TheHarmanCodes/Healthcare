@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import StatCard from "@/components/StatCard";
@@ -6,8 +5,13 @@ import { getRecentAppointmentList } from "@/lib/actions/appointment.action";
 import { DataTable } from "@/components/table/DataTable";
 import { isNetworkError } from "@/lib/network";
 import OfflineState from "@/components/offline-state";
+import { requirePageRole } from "@/lib/auth/rbac";
+import { Appointment } from "@/types/appwrite.types";
 
+/** Admin dashboard entry point guarded by Appwrite-label RBAC before appointment data is loaded. */
 const Admin = async () => {
+  await requirePageRole(["super-admin", "staff", "doctor"]);
+
   let appointments;
 
   try {
@@ -69,9 +73,10 @@ const Admin = async () => {
             icon="/assets/icons/cancelled.svg"
           />
         </section>
-        <DataTable data={appointments.rows} />
+        <DataTable data={appointments.rows as unknown as Appointment[]} />
       </main>
     </div>
   );
 };
+
 export default Admin;

@@ -14,7 +14,17 @@ import { Query, ID } from "node-appwrite";
 import { parseStringify } from "@/lib/utils";
 import { InputFile } from "node-appwrite/file";
 import { CreateUserParams, RegisterUserParams } from "@/types";
+import {
+  assertTrustedOrigin,
+  auditLog,
+  AuthError,
+  getCurrentUser,
+} from "@/lib/auth/rbac";
 
+/**
+ * Public patient bootstrap action.
+ * Creates or returns an Appwrite user record without assigning privileged labels.
+ */
 export const createUser = async (user: CreateUserParams) => {
   try {
     const newUser = await users.create({
@@ -28,18 +38,16 @@ export const createUser = async (user: CreateUserParams) => {
     const appwriteError = error as { code?: number };
 
     if (appwriteError.code === 409) {
-      const existingUser = await users.list(
-        {
-          queries: [Query.equal("email", [user.email])],
-        },
-        // {Query.equal("email", [user.email]),}
-      );
+      const existingUser = await users.list({
+        queries: [Query.equal("email", [user.email])],
+      });
       return parseStringify(existingUser?.users[0]);
     }
     throw error;
   }
 };
 
+/** Fetches an Appwrite user by id for the patient registration page. */
 export const getUser = async (userId: string) => {
   try {
     const user = await users.get({ userId });
@@ -50,6 +58,7 @@ export const getUser = async (userId: string) => {
   }
 };
 
+/** Looks up the patient profile row linked to an Appwrite user id. */
 export const getPatient = async (userId: string) => {
   try {
     const patients = await tablesDB.listRows({
@@ -66,11 +75,32 @@ export const getPatient = async (userId: string) => {
   }
 };
 
+/**
+ * Registers patient demographic/medical profile data.
+ * This intentionally supports both public patient self-registration and admin-side walk-in registration;
+ * doctors are blocked and the app never writes privileged Appwrite labels.
+ */
 export const registerPatient = async ({
   identificationDocument,
   ...patient
 }: RegisterUserParams) => {
   try {
+    await assertTrustedOrigin();
+    const actor = await getCurrentUser();
+
+    // This action intentionally serves both public patient self-registration
+    // and admin-side walk-in registration; privileged labels are never written here.
+    if (actor?.role === "doctor") {
+      throw new AuthError("Doctors cannot register patients.", 403);
+    }
+
+    if (actor?.role === "patient" && actor.id !== patient.userId) {
+      throw new AuthError(
+        "Patients can only complete their own registration.",
+        403,
+      );
+    }
+
     let file;
     if (identificationDocument) {
       const inputFile = InputFile.fromBuffer(
@@ -96,9 +126,20 @@ export const registerPatient = async ({
         ...patient,
       },
     });
+
+    if (actor?.role === "super-admin" || actor?.role === "staff") {
+      auditLog({
+        actorId: actor.id,
+        role: actor.role,
+        action: "register-patient",
+      });
+    }
+
     return parseStringify(newpatient);
   } catch (error) {
     console.error("[registerPatient] failed", error);
     throw error;
   }
 };
+
+

@@ -2,7 +2,7 @@
 
 import React, {useState} from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useForm} from "react-hook-form";
+import {type Resolver, useForm} from "react-hook-form";
 import * as z from "zod";
 import {useRouter} from "next/navigation";
 import {toast} from "sonner";
@@ -22,16 +22,18 @@ import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import Image from "next/image";
 import {SelectItem} from "@/components/ui/select";
 import FileUploader from "@/components/FileUploader";
-import {User} from "@/types";
+import {RegisterUserParams, User} from "@/types";
 import {isNetworkError} from "@/lib/network";
+
+type RegisterFormValues = z.infer<typeof PatientFormValidation>;
 
 const RegisterForm = ({user}: { user: User }) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>("");
 
-    const form = useForm<z.infer<typeof PatientFormValidation>>({
-        resolver: zodResolver(PatientFormValidation),
+    const form = useForm<RegisterFormValues>({
+        resolver: zodResolver(PatientFormValidation) as Resolver<RegisterFormValues>,
         defaultValues: {
             ...PatientFormDefaultValues,
             name: user?.name || "",
@@ -42,7 +44,7 @@ const RegisterForm = ({user}: { user: User }) => {
         reValidateMode: "onSubmit",
     });
 
-    async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
+    async function onSubmit(values: RegisterFormValues) {
         if (typeof navigator !== "undefined" && !navigator.onLine) {
             const message = "You are offline. Reconnect to continue.";
             setError(message);
@@ -77,7 +79,7 @@ const RegisterForm = ({user}: { user: User }) => {
                 userId: user.$id,
                 birthDate: new Date(values.birthDate),
                 identificationDocument,
-            };
+            } as RegisterUserParams;
 
             const patient = await registerPatient(patientData);
 
@@ -177,7 +179,7 @@ const RegisterForm = ({user}: { user: User }) => {
                             <RadioGroup
                                 className="flex h-11 gap-6 xl:justify-between w-fit"
                                 onValueChange={field.onChange}
-                                value={field.value}
+                                value={field.value as string}
                             >
                                 {GenderOptions.map((option, i) => (
                                     <div
@@ -391,7 +393,7 @@ const RegisterForm = ({user}: { user: User }) => {
                     name="identificationDocument"
                     label="Scanned Copy of Identification Document"
                     renderSkeleton={(field) => (
-                        <FileUploader files={field.value} onChange={field.onChange}/>
+                        <FileUploader files={field.value as File[] | undefined} onChange={field.onChange}/>
                     )}
                 />
             </div>
@@ -431,3 +433,6 @@ const RegisterForm = ({user}: { user: User }) => {
 };
 
 export default RegisterForm;
+
+
+

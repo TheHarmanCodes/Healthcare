@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import PhoneInput, { type Value } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 
 export enum FormFieldType {
   INPUT = "input",
+  PASSWORD = "password",
   TEXTAREA = "textarea",
   PHONE_INPUT = "phone",
   CHECKBOX = "checkbox",
@@ -87,6 +88,7 @@ const RenderField = <TFieldValues extends FieldValues>({
   label,
   controlClassName,
 }: RenderFieldProps<TFieldValues>) => {
+  const [showPassword, setShowPassword] = useState(false);
   switch (fieldType) {
     case FormFieldType.INPUT:
       return (
@@ -110,6 +112,56 @@ const RenderField = <TFieldValues extends FieldValues>({
             aria-invalid={fieldState.invalid}
             className="border-0 shad-input"
           />
+        </div>
+      );
+    case FormFieldType.PASSWORD:
+      return (
+        <div className="flex items-center rounded-md border border-dark-500 bg-dark-400">
+          {iconSrc && (
+            <Image
+              src={iconSrc}
+              alt={iconAlt ?? "icon"}
+              width={24}
+              height={24}
+              className="ml-2 shrink-0"
+            />
+          )}
+
+          <Input
+            {...field}
+            id={String(name)}
+            type={showPassword ? "text" : "password"}
+            placeholder={placeholder}
+            autoComplete={autoComplete}
+            disabled={disabled}
+            aria-invalid={fieldState.invalid}
+            className="border-0 shad-input"
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="mr-3 text-dark-700 transition-colors hover:text-white focus:outline-none"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? (
+              <Image
+                src="/assets/icons/eye.svg"
+                alt="eye"
+                width={24}
+                height={24}
+                className="w-5 h-5"
+              />
+            ) : (
+              <Image
+                src="/assets/icons/eye-closed.svg"
+                alt="eye-close"
+                width={24}
+                height={24}
+                className="w-5 h-5"
+              />
+            )}
+          </button>
         </div>
       );
 
@@ -254,7 +306,10 @@ const CustomFormField = <TFieldValues extends FieldValues>({
             (fieldType === FormFieldType.SKELETON ? (
               <div className={labelColor ?? "text-dark-700"}>{label}</div>
             ) : (
-              <FieldLabel htmlFor={String(name)} className={labelColor ?? "text-dark-700"}>
+              <FieldLabel
+                htmlFor={String(name)}
+                className={labelColor ?? "text-dark-700"}
+              >
                 {label}
               </FieldLabel>
             ))}
