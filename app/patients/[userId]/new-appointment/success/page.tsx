@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import {isNetworkError} from "@/lib/network";
 import OfflineState from "@/components/offline-state";
 
+/** Public appointment success page; getAppointment receives the route userId to enforce owner-only access. */
 const Success = async ({ params, searchParams }: SearchParamProps) => {
   const { userId } = await params;
   const { appointmentId } = await searchParams;
@@ -20,7 +21,7 @@ const Success = async ({ params, searchParams }: SearchParamProps) => {
 
   let appointment;
   try {
-    appointment = await getAppointment(id);
+    appointment = await getAppointment(id, userId);
   } catch (error) {
     if (isNetworkError(error)) {
       return (
@@ -103,3 +104,5 @@ const Success = async ({ params, searchParams }: SearchParamProps) => {
   );
 };
 export default Success;
+
+

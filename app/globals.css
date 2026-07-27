@@ -234,7 +234,7 @@
   @apply bg-[#28c773] text-white!;
 }
 @utility shad-primary-btn-hover {
-  @apply bg-[#169e56];
+  @apply bg-[#23ad64];
 }
 
 @utility shad-danger-btn {

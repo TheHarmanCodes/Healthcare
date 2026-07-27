@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -25,7 +25,7 @@ const PatientForm = () => {
       email: "",
       phone: "",
     },
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   async function onSubmit({ name, email, phone }: z.infer<typeof formSchema>) {

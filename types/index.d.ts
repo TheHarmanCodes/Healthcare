@@ -1,5 +1,4 @@
 import type { Appointment } from "./appwrite.types";
-import {string} from "zod";
 
 declare type SearchParamProps = {
   params: Promise<{ [key: string]: string }>;
@@ -53,17 +52,28 @@ declare type CreateAppointmentParams = {
   note: string | undefined;
 };
 
-declare type UpdateAppointmentParams = {
-  appointmentId: string;
-  userId: string;
-  appointment: Appointment;
-  type: string;
-};
+/**
+ * Narrow command payload accepted by updateAppointment.
+ * Clients cannot submit userId, patient data, status, or full Appwrite documents.
+ */
+export type AdminAppointmentUpdate =
+  | {
+      type: "schedule";
+      appointmentId: string;
+      schedule: Date;
+      primaryPhysician: string;
+    }
+  | {
+      type: "cancel";
+      appointmentId: string;
+      cancellationReason: string;
+    };
 
 declare type AppointmentModelProps = {
-  type: 'schedule' | 'cancel',
-  patientId: string,
-  userId: string,
-  appointment: Appointment,
-  description: string
+  type: "schedule" | "cancel";
+  patientId: string;
+  userId: string;
+  appointment: Appointment;
+  description: string;
 };
+

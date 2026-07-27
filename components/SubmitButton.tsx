@@ -13,7 +13,8 @@ const SubmitButton = ({ isLoading, className, children }: ButtonProps) => {
     <Button
       type="submit"
       className={
-        className ?? "shad-primary-btn w-full cursor-pointer py-4 mt-2"
+        className ??
+        "shad-primary-btn w-full cursor-pointer py-4 mt-2 hover:shad-primary-btn-hover"
       }
       disabled={isLoading}
     >
