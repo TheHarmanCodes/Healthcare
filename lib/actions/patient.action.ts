@@ -141,5 +141,3 @@ export const registerPatient = async ({
     throw error;
   }
 };
-
-

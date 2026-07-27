@@ -25,7 +25,7 @@ const PatientForm = () => {
       email: "",
       phone: "",
     },
-    mode: "onChange",
+    mode: "onSubmit",
   });
 
   async function onSubmit({ name, email, phone }: z.infer<typeof formSchema>) {
