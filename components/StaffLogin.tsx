@@ -25,7 +25,7 @@ import SubmitButton from "./SubmitButton";
  * Credential-only admin login modal.
  * It delegates authentication to the server action and never stores authorization state in browser storage.
  */
-const PasskeyModal = () => {
+const StaffLogin = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(true);
@@ -64,14 +64,16 @@ const PasskeyModal = () => {
     try {
       const result = await login(email, password);
 
-      if (result?.error) {
-        setError(result.error);
-        toast.error(result.error);
+      if (result.success) {
+        router.replace("/admin");
         return;
       }
+
+      const message = result.error ?? "Unable to sign in with those credentials.";
+      setError(message);
+      toast.error(message);
     } catch (err) {
-      console.log(err);
-      //* check the unexpected trigger behavior
+      console.error(err);
       const message = isNetworkError(err)
         ? "Connection lost while signing in. Please reconnect and try again."
         : "An unexpected error occurred. Please try again.";
@@ -153,4 +155,6 @@ const PasskeyModal = () => {
   );
 };
 
-export default PasskeyModal;
+export default StaffLogin;
+
+

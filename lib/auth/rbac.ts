@@ -3,12 +3,16 @@ import "server-only";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import * as sdk from "node-appwrite";
-import { API_KEY, NEXT_PUBLIC_ENDPOINT, PROJECT_ID } from "@/lib/appwrite.config";
+import {
+  API_KEY,
+  NEXT_PUBLIC_ENDPOINT,
+  PROJECT_ID,
+} from "@/lib/appwrite.config";
 
 export type Role = "super-admin" | "doctor" | "staff" | "patient";
 
-const SESSION_COOKIE = "pulsecare_session";
-const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const SESSION_COOKIE = "pulsecare-session";
+const LOGIN_WINDOW_MS = 12 * 60 * 60 * 1000; //12 hr session
 const MAX_LOGIN_ATTEMPTS = 5;
 
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
@@ -29,7 +33,8 @@ export class AuthError extends Error {
  * Unlabeled users are treated as patients; privileged labels are assigned only in Appwrite Console.
  */
 export function getRole(labels: string[] = []): Role {
-  if (labels.includes("super-admin") || labels.includes("superAdmin")) return "super-admin";
+  if (labels.includes("super-admin") || labels.includes("superAdmin"))
+    return "super-admin";
   if (labels.includes("doctor")) return "doctor";
   if (labels.includes("staff")) return "staff";
   return "patient";
@@ -121,7 +126,7 @@ export async function getCurrentUser(): Promise<{
   role: Role;
 } | null> {
   const cookieStore = await cookies();
-  const sessionSecret = cookieStore.get(SESSION_COOKIE)?.value;
+  const sessionSecret = cookieStore.get(SESSION_COOKIE!)?.value;
 
   if (!sessionSecret) return null;
 
@@ -174,7 +179,7 @@ export async function requirePageRole(allowed: Role[]) {
 export async function createSession(email: string, password: string) {
   const requestHeaders = await headers();
   const key = getLoginKey(email, requestHeaders);
-
+  // TODO: implementation of arcjet for trackers & attacks :-Refer subDub API pro.
   assertLoginAllowed(key);
 
   try {
@@ -193,7 +198,7 @@ export async function createSession(email: string, password: string) {
     const role = getRole(user.labels);
 
     const cookieStore = await cookies();
-    cookieStore.set(SESSION_COOKIE, session.secret, {
+    cookieStore.set(SESSION_COOKIE!, session.secret, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -220,7 +225,7 @@ export async function createSession(email: string, password: string) {
 /** Deletes the current Appwrite session when possible and always clears the local HttpOnly cookie. */
 export async function destroySession() {
   const cookieStore = await cookies();
-  const sessionSecret = cookieStore.get(SESSION_COOKIE)?.value;
+  const sessionSecret = cookieStore.get(SESSION_COOKIE!)?.value;
 
   if (sessionSecret) {
     try {
@@ -231,7 +236,7 @@ export async function destroySession() {
     }
   }
 
-  cookieStore.delete(SESSION_COOKIE);
+  cookieStore.delete(SESSION_COOKIE!);
 }
 
 /** Rejects cross-origin sensitive mutations when Origin and Host are both present. */
@@ -261,8 +266,3 @@ export function auditLog(event: {
     timestamp: new Date().toISOString(),
   });
 }
-
-
-
-
-

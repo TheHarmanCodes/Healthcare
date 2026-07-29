@@ -7,6 +7,7 @@ import { isNetworkError } from "@/lib/network";
 import OfflineState from "@/components/offline-state";
 import { requirePageRole } from "@/lib/auth/rbac";
 import { Appointment } from "@/types/appwrite.types";
+import AdminLogoutButton from "@/components/AdminLogoutButton";
 
 /** Admin dashboard entry point guarded by Appwrite-label RBAC before appointment data is loaded. */
 const Admin = async () => {
@@ -42,9 +43,12 @@ const Admin = async () => {
             className="h-10 md:h-12 w-fit"
           />
         </Link>
-        <p className="text-sm md:text-lg leading-5 font-semibold">
-          Admin Dashboard
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="text-sm md:text-lg leading-5 font-semibold">
+            Admin Dashboard
+          </p>
+          <AdminLogoutButton />
+        </div>
       </header>
       <main className="admin-main">
         <section className="w-full space-y-2">
@@ -80,3 +84,4 @@ const Admin = async () => {
 };
 
 export default Admin;
+

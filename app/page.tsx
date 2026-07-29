@@ -1,16 +1,29 @@
 import PatientForm from "@/components/forms/PatientForm";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { SearchParamProps } from "@/types";
-import PasskeyModal from "@/components/StaffLogin";
+import StaffLogin from "@/components/StaffLogin";
+import { getCurrentUser } from "@/lib/auth/rbac";
 
 export default async function Home({ searchParams }: SearchParamProps) {
   const { admin } = await searchParams;
   const isAdmin = admin === "true";
 
+  if (isAdmin) {
+    const currentUser = await getCurrentUser();
+    if (
+      currentUser?.role === "super-admin" ||
+      currentUser?.role === "staff" ||
+      currentUser?.role === "doctor"
+    ) {
+      redirect("/admin");
+    }
+  }
+
   return (
     <div className="flex min-h-dvh md:h-screen md:max-h-screen">
-      {isAdmin && <PasskeyModal />}
+      {isAdmin && <StaffLogin />}
       <section className="remove-scrollbar container sm:mt-2 md:my-auto pb-6 md:pb-0">
         <div className="sub-container">
           <Image
