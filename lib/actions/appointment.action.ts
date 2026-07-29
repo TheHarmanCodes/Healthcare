@@ -3,11 +3,12 @@
 import {
   APPOINTMENT_COLLECTION_ID,
   DATABASE_ID,
+  messaging,
   PATIENT_COLLECTION_ID,
   tablesDB,
 } from "@/lib/appwrite.config";
 import { ID, Query } from "node-appwrite";
-import { parseStringify } from "@/lib/utils";
+import { formatDateTime, parseStringify } from "@/lib/utils";
 import { AdminAppointmentUpdate, CreateAppointmentParams } from "@/types";
 import {
   AdminAppointmentUpdateSchema,
@@ -23,12 +24,14 @@ import {
   requireRole,
 } from "@/lib/auth/rbac";
 
-/** Enforces the only valid admin appointment status transitions: pending -> scheduled and pending/scheduled -> cancelled. */
+/** Enforces the only valid admin appointment status transitions: pending -> scheduled and pending/scheduled -> cancelled. cancelled -> reschedule */
 function ensureAppointmentTransition(
   currentStatus: Appointment["status"],
   nextStatus: Appointment["status"],
 ) {
-  const canSchedule = currentStatus === "pending" && nextStatus === "scheduled";
+  const canSchedule =
+    (currentStatus === "pending" || currentStatus === "cancelled") &&
+    nextStatus === "scheduled";
   const canCancel =
     (currentStatus === "pending" || currentStatus === "scheduled") &&
     nextStatus === "cancelled";
@@ -261,6 +264,13 @@ export const updateAppointment = async (command: AdminAppointmentUpdate) => {
       newStatus: nextStatus,
     });
 
+    const smsMessage =
+      validated.type === "schedule"
+        ? `Hi, it's PulseCare.\nYour appointment has been scheduled for ${formatDateTime(validated.schedule).dateTime} with Dr. ${validated.primaryPhysician}`
+        : `Hi, it's PulseCare.\nWe regret to inform you that your appointment has been cancelled for the following reason: ${validated.cancellationReason}`;
+
+    await sendSMSNotification(existingAppointment.userId, smsMessage);
+
     revalidatePath("/admin");
     return parseStringify(updatedAppointment);
   } catch (err) {
@@ -269,4 +279,16 @@ export const updateAppointment = async (command: AdminAppointmentUpdate) => {
   }
 };
 
-
+export const sendSMSNotification = async (userId: string, content: string) => {
+  try {
+    const message = await messaging.createSMS({
+      messageId: ID.unique(),
+      content: content,
+      topics: [],
+      users: [userId],
+    });
+    return parseStringify(message);
+  } catch (err) {
+    console.log(err);
+  }
+};

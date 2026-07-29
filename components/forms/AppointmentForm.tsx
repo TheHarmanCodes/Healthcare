@@ -203,20 +203,26 @@ const AppointmentForm = ({
               control={form.control}
               name="reason"
               label="Reason for appointment "
-              placeholder="ex: Annual montly check-up"
+              placeholder="ex: Annual monthly check-up"
               controlClassName="h-25"
             />
-            {type === "create" && (
+
+            {(type === "create" || appointment?.note.trim()) && (
               <CustomFormField
                 fieldType={FormFieldType.TEXTAREA}
                 control={form.control}
                 name="note"
                 label="Additional comments/notes"
-                placeholder="ex: Prefer afternoon appointments, if possible"
+                placeholder={
+                  type === "create"
+                    ? "ex: Prefer afternoon appointments, if possible"
+                    : ""
+                }
                 controlClassName="h-25"
               />
             )}
           </div>
+
           {/*Appointment schedule date input*/}
           <CustomFormField
             fieldType={FormFieldType.DATE_PICKER}
@@ -253,3 +259,5 @@ const AppointmentForm = ({
 };
 
 export default AppointmentForm;
+
+

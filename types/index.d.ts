@@ -70,10 +70,11 @@ export type AdminAppointmentUpdate =
     };
 
 declare type AppointmentModelProps = {
+  userId: string;
   type: "schedule" | "cancel";
   patientId: string;
-  userId: string;
   appointment: Appointment;
   description: string;
 };
+
 

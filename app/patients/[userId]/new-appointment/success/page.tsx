@@ -7,8 +7,10 @@ import { Doctors } from "@/constants";
 import { formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { notFound } from "next/navigation";
-import {isNetworkError} from "@/lib/network";
+import { isNetworkError } from "@/lib/network";
 import OfflineState from "@/components/offline-state";
+import * as Sentry from "@sentry/nextjs";
+import { getUser } from "@/lib/actions/patient.action";
 
 /** Public appointment success page; getAppointment receives the route userId to enforce owner-only access. */
 const Success = async ({ params, searchParams }: SearchParamProps) => {
@@ -22,6 +24,14 @@ const Success = async ({ params, searchParams }: SearchParamProps) => {
   let appointment;
   try {
     appointment = await getAppointment(id, userId);
+    const user = await getUser(userId);
+    Sentry.metrics.count("user_view_appointment_success", 1, {
+      attributes: {
+        endpoint: "/patients/:userId/register",
+        userId: userId,
+        name: user.name,
+      },
+    });
   } catch (error) {
     if (isNetworkError(error)) {
       return (
@@ -104,5 +114,3 @@ const Success = async ({ params, searchParams }: SearchParamProps) => {
   );
 };
 export default Success;
-
-
