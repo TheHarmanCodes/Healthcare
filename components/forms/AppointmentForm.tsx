@@ -203,7 +203,7 @@ const AppointmentForm = ({
               control={form.control}
               name="reason"
               label="Reason for appointment "
-              placeholder="ex: Annual monthly check-up"
+              placeholder="ex: Annual check-up"
               controlClassName="h-25"
             />
 
@@ -259,5 +259,3 @@ const AppointmentForm = ({
 };
 
 export default AppointmentForm;
-
-

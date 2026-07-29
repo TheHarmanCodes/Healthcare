@@ -24,14 +24,6 @@ const Success = async ({ params, searchParams }: SearchParamProps) => {
   let appointment;
   try {
     appointment = await getAppointment(id, userId);
-    const user = await getUser(userId);
-    Sentry.metrics.count("user_view_appointment_success", 1, {
-      attributes: {
-        endpoint: "/patients/:userId/register",
-        userId: userId,
-        name: user.name,
-      },
-    });
   } catch (error) {
     if (isNetworkError(error)) {
       return (
@@ -48,6 +40,12 @@ const Success = async ({ params, searchParams }: SearchParamProps) => {
   if (!appointment) {
     notFound();
   }
+
+  Sentry.metrics.count("user_view_appointment_success", 1, {
+    attributes: {
+      endpoint: "/patients/:userId/new-appointment/success",
+    },
+  });
 
   const doctor = Doctors.find(
     (doc) => doc.name === appointment.primaryPhysician,

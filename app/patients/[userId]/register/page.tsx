@@ -19,8 +19,6 @@ const Register = async ({
     Sentry.metrics.count("user_view_register", 1, {
       attributes: {
         endpoint: "/patients/:userId/register",
-        userId: user.$id,
-        name: user.name,
       },
     });
   } catch (error) {
