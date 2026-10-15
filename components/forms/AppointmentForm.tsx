@@ -118,7 +118,6 @@ const AppointmentForm = ({
         }
       }
     } catch (err) {
-      console.error(err);
       const message = isNetworkError(err)
         ? "Connection lost while saving the appointment. Please reconnect and try again."
         : "An error occurred. Please try again.";

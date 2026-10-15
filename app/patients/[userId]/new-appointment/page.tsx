@@ -25,7 +25,6 @@ export default async function NewAppointment({params}: SearchParamProps) {
         throw error;
     }
 
-    // console.log(patient);
     if (!patient) {
         // handle it later on
         return <div>Patient not found.</div>;

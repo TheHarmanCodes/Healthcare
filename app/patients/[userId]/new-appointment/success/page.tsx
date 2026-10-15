@@ -10,7 +10,6 @@ import { notFound } from "next/navigation";
 import { isNetworkError } from "@/lib/network";
 import OfflineState from "@/components/offline-state";
 import * as Sentry from "@sentry/nextjs";
-import { getUser } from "@/lib/actions/patient.action";
 
 /** Public appointment success page; getAppointment receives the route userId to enforce owner-only access. */
 const Success = async ({ params, searchParams }: SearchParamProps) => {

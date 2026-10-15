@@ -73,7 +73,6 @@ const StaffLogin = () => {
       setError(message);
       toast.error(message);
     } catch (err) {
-      console.error(err);
       const message = isNetworkError(err)
         ? "Connection lost while signing in. Please reconnect and try again."
         : "An unexpected error occurred. Please try again.";

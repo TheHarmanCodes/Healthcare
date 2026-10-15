@@ -30,7 +30,6 @@ const AdminLogoutButton = () => {
       router.replace("/?admin=true");
       router.refresh();
     } catch (err) {
-      console.error(err);
       const message = isNetworkError(err)
         ? "Connection lost while signing out. Please reconnect and try again."
         : "Unable to sign out. Please try again.";
