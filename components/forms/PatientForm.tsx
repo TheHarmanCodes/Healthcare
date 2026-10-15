@@ -50,7 +50,6 @@ const PatientForm = () => {
         toast.error(message);
       }
     } catch (err) {
-      console.error(err);
       const message = isNetworkError(err)
         ? "Connection lost while creating the user. Please reconnect and try again."
         : "An error occurred. Please try again.";

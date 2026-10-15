@@ -93,7 +93,6 @@ const RegisterForm = ({ user }: { user: User }) => {
         toast.error(message);
       }
     } catch (err) {
-      console.error("[RegisterForm] submit failed", err);
       const message = isNetworkError(err)
         ? "Connection lost during registration. Please reconnect and try again."
         : "An error occurred during registration. Please try again.";
